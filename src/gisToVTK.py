@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 # ***********************************************************************************
-# * Copyright 2019 Paulo A. Herrera. All rights reserved.                           * 
+# * Copyright 2019 Paulo A. Herrera. All rights reserved.                           *
 # *                                                                                 *
 # * Redistribution and use in source and binary forms, with or without              *
 # * modification, are permitted provided that the following conditions are met:     *
@@ -25,6 +25,60 @@
 # * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                    *
 # ***********************************************************************************
 
+def get_file_list(src, dst):
+    """
+    Check paths for source files (.shp) and destination (VTK files)
+    :param src: it can be a file name with or without extension. It can be
+                the .shp file or any other of the companying files (eg. .dbf)
+                that share a common root.
+                It can also be a directory with multiple .shp files. In this case,
+                all files are exported to VTK format and saved to the dst directory.
+    :param dst: path to the destination file without extension (if present, then it is removed)
+                or to a directory. In the second case, the output file has the same root
+                as the src file(s).
+    """
+    import os
+    import glob
+    assert os.path.exists(src)
+    assert os.path.exists(dst)
+    if os.path.isfile(dst): assert os.path.isfile(src), "Path to src must point to file"
+
+    files_src, files_dst = [], []
+
+    if os.path.isfile(src):
+        if "." in src:
+            src = src.split(".")[0]  # remove extension
+        files_src.append(src)
+
+    else: # directory
+        g = os.path.join(src, "*.shp")
+        ff = glob.glob(g)
+        for f in ff:
+            f = f.split(".")[0]      # remove extension
+            files_src.append(f)
+
+    if os.path.isfile(dst):
+        if "." in dst:
+            dst = dst.split(".")[0]  # remove extension
+        files_dst.append(dst)
+    else:
+        for f in files_src:
+            root = os.path.basename(f)
+            if "." in root: root = root.split(".")
+            fdst = os.path.join(dst, root)
+            files_dst.append(fdst)
+
+    assert len(files_src) == len(files_dst)
+    print("Processing files...")
+    for i in range(len(files_src)):
+        print("file: %d"%i)
+        print("  src: %s"%files_src[i])
+        print("  dst: %s"%files_dst[i])
+    print("-"*40)
+
+    return files_src, files_dst
+
+
 ################################################################################################
 # DESCRIPTION:                                                                                 #
 #                                                                                              #
@@ -43,7 +97,9 @@ parser.add_argument("-s", "--shape", dest="src",
                     help="path to shape file with or without extension .shp")
 parser.add_argument("-d", "--dest", dest="dst",
                     help="path to VTK file without extension")
-                    
+parser.add_argument("-e", "--elev", dest="elev",
+                    nargs='+', type=float, default=0.0,
+                    help="default elevation for files that only have (x,y) coordinates")
 parser.add_argument("-v", "--verbose", dest="verbose", action="store_true",
                     help="print some information while reading files")
 
@@ -52,9 +108,10 @@ args = parser.parse_args()
 
 print("*"*40)
 print("Exporting GIS data to VTK format...")
-print("Shape file(s): " + args.src)
+print("Path to shape file(s): " + args.src)
 print("VTK output file: " + args.dst)
 print("Verbose: " + str(args.verbose) )
+print("Default elevation: " + str(args.elev) )
 print("-"*40)
 
 ###############################################################
@@ -65,14 +122,13 @@ print("-"*40)
 import os
 from Shape import CShape
 
-src = args.src 
-if "." in src:
-    src = src.split(".")[0]
-    
-# DO SOME CHECKING FOR DST (EXIST?, CREATE?, ETC) 
+# DO SOME CHECKING FOR DST (EXIST?, CREATE?, ETC)
+files_src, files_dst = get_file_list(args.src, args.dst)
 
-shapes = CShape.readShapes(src, args.verbose)
-CShape.toVTK(args.dst, shapes, args.verbose)
+for i in range(len(files_src)):
+    src, dst = files_src[i], files_dst[i]
+    shapes = CShape.readShapes(src, args.verbose)
+    CShape.toVTK(dst, shapes, default_z = args.elev, verbose = args.verbose)
 
 print("*** Done ***")
 print("*"*40)
