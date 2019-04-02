@@ -1,5 +1,34 @@
 import struct
+import binascii
 
+def _read_native_string(b, nbytes):
+    bb = b.read(nbytes)
+    #print(bb)
+    s = bytearray(bb).decode('ASCII')
+    #s = binascii.b2a_uu(bytearray(bb))
+    #print(s)
+    #print(len(bb))
+    #s = struct.unpack("s", bytearray(bb))[0]
+    return s
+
+def _read_native_uchar(b):
+    return struct.unpack("b", bytearray(b.read(1)))[0]
+        
+def _read_native_char(b):
+    return struct.unpack("c", bytearray(b.read(1)))[0]
+
+def _read_native_short(b):
+    return struct.unpack("h", bytearray(b.read(2)))[0]
+    
+def _read_native_ushort(b):
+    return struct.unpack("H", bytearray(b.read(2)))[0]
+
+def _read_native_int(b):
+    return struct.unpack("i", bytearray(b.read(4)))[0]
+
+def _read_native_uint(b):
+    return struct.unpack("I", bytearray(b.read(4)))[0]
+    
 def _read_little_int(b):
     return struct.unpack("<i", bytearray(b.read(4)))[0]
 
