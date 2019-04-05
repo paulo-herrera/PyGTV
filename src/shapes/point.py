@@ -17,15 +17,15 @@ class Point:
         return "Point[%d]"%self.idx
 
     @staticmethod
-    def read(b):
-        print("reading point...")
+    def read(b, verbose = False):
+        if verbose: print("reading point...")
         # 0-3 	int32 	big 	Record number (1-based)
         idx = _read_big_int(b)
-        print("  idx: %d"%idx)
+        if verbose: print("  idx: %d"%idx)
 
         # 4-7 	int32 	big 	Record length (in 16-bit words)
         length = _read_big_int(b)
-        print("  length: %d [bytes]"%length)
+        if verbose: print("  length: %d [bytes]"%length)
 
         shape_type = _read_little_int(b)
         assert shape_type == 1

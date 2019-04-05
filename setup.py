@@ -45,6 +45,11 @@ setup(
     url = 'https://github.com/paulo-herrera/PyGTV.git',
     packages = ['gtv'],
     package_dir = {'gtv' : 'src'},
-    package_data = {'gtv' :  ['LICENSE', 'examples/*.py']}
+    package_data = {'gtv' :  ['LICENSE', 'examples/*.py', 'files/*.py', 'shapes/*.py']},
+    project_urls={
+        "Bug Tracker": "http://github.com/paulo-herrera/PyGTV",
+        "Documentation": "http://github.com/paulo-herrera/PyGTV",
+        "Source Code": "http://github.com/paulo-herrera/PyGTV",
+    }
 )
 

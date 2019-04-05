@@ -1,6 +1,6 @@
 import struct
 import binascii
-
+    
 def _read_native_string(b, nbytes):
     bb = b.read(nbytes)
     #print(bb)

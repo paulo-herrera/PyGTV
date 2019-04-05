@@ -88,11 +88,12 @@ class Field:
     @staticmethod
     def _read_field_descriptor(b):
         #0 10	11 bytes	Field name in ASCII (zero-filled)
-        name = _read_native_string(b, 11).strip()
+        name = str(_read_native_string(b, 11).rstrip())
+        name = name.replace('\x00','')
         #print(n)
         
         #11	1 byte	Field type in ASCII (C, D, F, L, M, or N)
-        ftype = _read_native_char(b)
+        ftype = str(_read_native_char(b))
         #print(c)
         
         #1215	4 bytes	Reserved
@@ -138,7 +139,39 @@ class FileDbf:
         self.num_records = num_records
         self.size_record = size_record
         self.records = []
-    
+        
+    def get_records_as_lists(self):
+        """ Returns values in records as separate lists for each field in the dbf file. Lists are stored in two dictionaries with
+            their field name as key: one for numeric fields and one for text fields.
+            For example, 
+                dict["temp"] = [TempShape1, TempShape2, etc..]
+        """
+        values = {}
+        text = {}
+        for i in range(self.nfields):
+            f = self.fields[i]
+            #print(f)
+            if f.type == "N" or f.type == "F":
+                #print(f.name)
+                #print(f.type)
+                vv = []
+                for j in range(len(self.records)):
+                    r = self.records[j]
+                    v = float(r[i][1])
+                    #print(v)
+                    vv.append(v)
+                values[f.name] = vv
+            else:
+                tt = []
+                for j in range(len(self.records)):
+                    r = self.records[j]
+                    t = r[i][1]
+                    #print(v)
+                    tt.append( str(t).strip())
+                text[f.name] = tt
+        
+        return values, text
+        
     def display(self):
         print(self.__str__())
         #self.print_fields()
@@ -153,14 +186,16 @@ class FileDbf:
             print_record(r, self.records[r])
         
     def __str__(self):
-        s = "FileDbf: \n"
-        s = s + "  src: %s\n"%self.src
-        s = s + "  # fields per record: %d\n"%len(self.fields)
-        s = s + "  fields:\n"
+        s = "="*40 + "\n"
+        s = s + "Dbf file: \n"
+        s = s + "  - Src: %s\n"%self.src
+        s = s + "  - # fields per record: %d\n"%len(self.fields)
+        s = s + "  - fields:\n"
         for f in self.fields:
             s = s + "    * %s: %s[%s] (%d characters) \n"%(f.name, f.type_desc, f.type, f.length)
-        s = s + "  # records: %d\n"%self.num_records
-        s = s + "  record size[bytes]: %d"%self.size_record
+        s = s + "  - # records: %d\n"%self.num_records
+        s = s + "  - record size[bytes]: %d\n"%self.size_record
+        s = s + "="*40
         return s
     
     def read_record(self, b, convert_str_to_values = True):
@@ -195,31 +230,40 @@ class FileDbf:
             :param src: path to .dbf file
             :param convert_records: If true convert strings to values in records
         """
+        print("Reading .dbf file from: ")
+        print(src)
         
         b = open(src, "rb")
         #0	1 byte	Valid dBASE for DOS file; bits 0-2 indicate version number, bit 3 indicates the presence of a dBASE for DOS memo file, bits 4-6 indicate the presence of a SQL table, bit 7 indicates the presence of any memo file (either dBASE m PLUS or dBASE for DOS)
         ver = binascii.hexlify(bytearray(b.read(1)))
         assert ver == "03"
-        print("Version: " + str(ver))
+        #print("Version: " + str(ver))
 
         #1-3	3 bytes	Date of last update; formatted as YYMMDD
         b.read(3)
+        #Y = int(_read_native_char(b))
+        #M = int(_read_native_char(b))
+        #D = int(_read_native_char(b))
+        #print("Last updated (YYYY/MM/DD): %d/%d/%d"%(Y, M, D))
         #print(d.decode("ascii"))
+        #msg = _bytes_to_int(bb)
+        #print(msg)
+      
 
         #4-7	32-bit number	Number of records in the database file
         nr = _read_native_uint(b)
-        print("nr: %d"%nr)
+        #print("nr: %d"%nr)
 
         # 8-9	16-bit number	Number of bytes in the header
         nbh = _read_native_ushort(b)
-        print("nbh: " + str(nbh))
-        print("nbh - 32 - 1: " + str(nbh - 32 - 1)) # 32 bytes header + 1 byte end of header
+        #print("nbh: " + str(nbh))
+        #print("nbh - 32 - 1: " + str(nbh - 32 - 1)) # 32 bytes header + 1 byte end of header
         nf = int( (nbh - 33) / 32) # Each field descriptor has 32 bytes
-        print("nf: " + str(nf))
+        #print("nf: " + str(nf))
 
         #10-11	16-bit number	Number of bytes in the record
         nbr = _read_native_ushort(b)
-        print("nbr: " + str(nbr))
+        #print("nbr: " + str(nbr))
 
         #12-13	2 bytes	Reserved; fill with 0
         b.read(2)
@@ -249,7 +293,7 @@ class FileDbf:
             fields.append(ff)
         
         fdbf = FileDbf(src, fields, nr, nbr)
-        print(fdbf)
+        #print(fdbf)
             
         #n +1	1 byte	0x0D as the field descriptor array terminator
         x = binascii.hexlify(bytearray(b.read(1)))
@@ -269,5 +313,14 @@ if __name__ == "__main__":
     
     fdbf = FileDbf.read(src, convert_records = False)
     fdbf.display()
+    values, text = fdbf.get_records_as_lists()
+    
+    for v in values.keys():
+        print(v)
+        print(values[v])
+        
+    for v in text.keys():
+        print(v)
+        print(text[v])
         
     print("*** ALL DONE ***")
