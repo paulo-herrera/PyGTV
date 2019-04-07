@@ -121,9 +121,9 @@ print("-"*40)
 #dst = "./test_polygons"
 ###############################################################
 import os
-from files.shp import FileShp
-from files.dbf import FileDbf
-from files.prj import FilePrj
+from gtv.files.shp import FileShp
+from gtv.files.dbf import FileDbf
+from gtv.files.prj import FilePrj
     
 # DO SOME CHECKING FOR DST (EXIST?, CREATE?, ETC)
 files_src, files_dst = get_file_list(args.src, args.dst)

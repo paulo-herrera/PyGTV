@@ -17,9 +17,9 @@ import struct
 import binascii
 import datetime
 
-from shapes.helpers import _read_little_int, _read_big_int, _read_little_double, _read_big_double
-from shapes.helpers import _read_native_char, _read_native_ushort, _read_native_short
-from shapes.helpers import _read_native_int, _read_native_uint, _read_native_string, _read_native_uchar
+from ..helpers import _read_little_int, _read_big_int, _read_little_double, _read_big_double
+from ..helpers import _read_native_char, _read_native_ushort, _read_native_short
+from ..helpers import _read_native_int, _read_native_uint, _read_native_string, _read_native_uchar
 
 # TODO: Check for repeated field names
 

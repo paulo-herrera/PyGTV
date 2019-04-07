@@ -1,4 +1,4 @@
-from helpers import _read_little_int, _read_big_int, _read_little_double, _read_big_double
+from ..helpers import _read_little_int, _read_big_int, _read_little_double, _read_big_double
 
 class Point:
     

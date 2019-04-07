@@ -4,7 +4,7 @@ INTRODUCTION
 Python Gis-to-Vtk (PyGTV) is a small python library to read and export vector GIS
 information stored as shape (.shp) and associated (.dbf and .shx) files to VTK 
 files that can be imported into visualization packages such as Paraview, VisIt 
-or Mayavi.       
+or Mayavi.     
 
 BACKGROUND
 ===========
@@ -53,6 +53,16 @@ DOCUMENTATION:
 This file together with the included examples in the examples directory in the
 source tree provide enough information to start using the package.
  
+When the setup.py script is run, it installs scripts (e.g. shapeToVTK) in a bin 
+directory that should be included in the PATH, so that they can be directly run from
+the command line when python is also included in the PATH (typically, in Unix systems
+such as Linux and/or Mac-OS). I have to test in Windows distributions such as
+Anaconda.
+
+The setup.py script also installs other files under the lib/ directory so that they
+can be imported into other scripts or modules (see src/examples/points.py for an 
+example).
+
 REQUIREMENTS:
 =============
 
@@ -75,7 +85,7 @@ NOTE: you may have to change the Python version depending of the installed
 version on your system.
 
 To test the package one can run some of the examples, e.g.:
-./tmp/lib/python2.7/site-packages/examples/points.py
+./tmp/lib/python2.7/site-packages/gtv/examples/points.py
 
 That should create a points.vtu file in the current directory.
 

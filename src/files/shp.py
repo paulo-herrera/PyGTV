@@ -5,13 +5,13 @@
 import struct
 import binascii
 
-from shapes.shape_types import TS, SHP_TYPES
-from shapes.helpers import _read_little_int, _read_big_int, _read_little_double, _read_big_double, _read_bounding_box
-from shapes.point import Point
-from shapes.polyline import Polyline
-from shapes.polygon import Polygon
-from shapes.polygonz import PolygonZ
-from shapes.multipoint import Multipoint
+from ..helpers import _read_little_int, _read_big_int, _read_little_double, _read_big_double, _read_bounding_box
+from ..shapes.shape_types import TS, SHP_TYPES
+from ..shapes.point import Point
+from ..shapes.polyline import Polyline
+from ..shapes.polygon import Polygon
+from ..shapes.polygonz import PolygonZ
+from ..shapes.multipoint import Multipoint
        
 class FileShp:
     def __init__(self, src, shape_type, bbox, mm):

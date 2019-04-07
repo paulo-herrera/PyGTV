@@ -46,6 +46,7 @@ setup(
     packages = ['gtv'],
     package_dir = {'gtv' : 'src'},
     package_data = {'gtv' :  ['LICENSE', 'examples/*.py', 'files/*.py', 'shapes/*.py']},
+    scripts=['src/shapeToVTK.py'],
     project_urls={
         "Bug Tracker": "http://github.com/paulo-herrera/PyGTV",
         "Documentation": "http://github.com/paulo-herrera/PyGTV",
