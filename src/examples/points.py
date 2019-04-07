@@ -7,7 +7,8 @@ if len(sys.argv) > 1:
     src = sys.argv[1]
     print("src: %s"%src)
 else:
-    src = "./ex1/points.shp"
+    PYGTV_DIR = os.environ['PYGTV_DIR'])
+    src = os.path.join(PYGTV_SRC, "src/ex1/points.shp")
 
 dir = os.path.dirname(src)
 src = os.path.basename(src)

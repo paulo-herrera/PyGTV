@@ -63,6 +63,19 @@ The setup.py script also installs other files under the lib/ directory so that t
 can be imported into other scripts or modules (see src/examples/points.py for an 
 example).
 
+To test the installation run:
+
+>> shapeToVTK --help
+
+and/or
+
+>> export PYGTV_DIR = PATH_TO_DIST_FILEs
+>> python PATH_TO_PYGTV/src/examples/points.py
+
+or
+
+>> python PATH_TO_PYGTV/src/examples/points.py PATH_TO_PYGTV/src/examples/ex1/points.shp
+
 REQUIREMENTS:
 =============
 
