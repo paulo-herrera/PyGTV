@@ -7,8 +7,8 @@ if len(sys.argv) > 1:
     src = sys.argv[1]
     print("src: %s"%src)
 else:
-    PYGTV_DIR = os.environ['PYGTV_DIR'])
-    src = os.path.join(PYGTV_SRC, "src/ex1/points.shp")
+    PYGTV_DIR = os.environ['PYGTV_DIR']
+    src = os.path.join(PYGTV_DIR, "src/examples/ex1/points.shp")
 
 dir = os.path.dirname(src)
 src = os.path.basename(src)
@@ -38,5 +38,14 @@ db.print_records()
 print("*"*25)
 
 vals, text = db.get_records_as_lists()
+
+fs.add_attributes(db)
+print("*"*25)
+print("file: %s"%fs.src)
+fs.list_shapes()
+
+#print("*"*25)
+#js = fs.asJSON()
+#print(js)
 
 print("*** ALL DONE ***")

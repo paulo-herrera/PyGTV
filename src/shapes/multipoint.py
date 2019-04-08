@@ -1,11 +1,13 @@
 from ..helpers import _read_little_int, _read_big_int, _read_little_double, _read_big_double, _read_bounding_box
+from .shape import Shape
 
-class Multipoint:
+class Multipoint(Shape):
     
     shape_type = 8
     shape_desc = "Multipoint"
 
     def __init__(self, idx, pts, bbox): # a waste of memory, but makes easier to process shapes later
+        Shape.__init__(self)
         self.idx     = idx
         self.points  = pts
         self.npoints = len(pts)
@@ -14,7 +16,9 @@ class Multipoint:
         self.bbox    = None
 
     def __str__(self):
-        return "Multipoint[%d]"%self.idx
+        s = "Multipoint[%d]\n "%self.idx
+        s = s + Shape.__str__(self)
+        return s
 
     @staticmethod
     def read(b, verbose = False):

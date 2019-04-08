@@ -171,6 +171,11 @@ class FileDbf:
                 text[f.name] = tt
         
         return values, text
+    
+    def get_records(self):
+        """ Returns a list of dictionaries that store information read from the .dbf file.
+        """
+        return self.records
         
     def display(self):
         print(self.__str__())

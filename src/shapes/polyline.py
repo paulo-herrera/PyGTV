@@ -1,12 +1,14 @@
 from shape_types import TS, SHP_TYPES
 from ..helpers import _read_little_int, _read_big_int, _read_little_double, _read_big_double,  _read_bounding_box
+from .shape import Shape
 
-class Polyline:
+class Polyline(Shape):
 
     shape_type = 3
     shape_desc = "Polyline"
 
     def __init__(self, idx, points, parts, bbox):
+        Shape.__init__(self)
         self.idx    = idx
         self.points = points
         self.parts  = parts
@@ -15,7 +17,9 @@ class Polyline:
         self.bbox = bbox
 
     def __str__(self):
-        return "Polyline[%d]"%self.idx
+        s = "Polyline[%d]\n"%self.idx
+        s = s + Shape.__str__(self)
+        return s
 
     @staticmethod
     def read(b):

@@ -1,11 +1,13 @@
 from ..helpers import _read_little_int, _read_big_int, _read_little_double, _read_big_double
+from .shape import Shape
 
-class Point:
+class Point(Shape):
     
     shape_type = 1
     shape_desc = "Point"
 
     def __init__(self, idx, x, y): # a waste of memory, but makes easier to process shapes later
+        Shape.__init__(self)
         self.idx     = idx
         self.points  = [(x,y)]
         self.npoints = 1
@@ -14,7 +16,9 @@ class Point:
         self.bbox    = None
 
     def __str__(self):
-        return "Point[%d]"%self.idx
+        s = "Point[%d]\n"%self.idx
+        s = s + Shape.__str__(self)
+        return s
 
     @staticmethod
     def read(b, verbose = False):

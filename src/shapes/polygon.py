@@ -1,12 +1,14 @@
 from shape_types import TS, SHP_TYPES
 from ..helpers import _read_little_int, _read_big_int, _read_little_double, _read_big_double, _read_bounding_box
+from .shape import Shape
 
-class Polygon:
+class Polygon(Shape):
 
     shape_type = 5
     shape_desc = "Polygon"
 
     def __init__(self, idx, points, parts, bbox):
+        Shape.__init__(self)
         self.idx    = idx
         self.points = points
         self.parts  = parts
@@ -59,4 +61,6 @@ class Polygon:
         return Polygon(idx, points, parts, bbox)
         
     def __str__(self):
-        return "Polygon[%d]"%self.idx
+        s = "Polygon[%d]\n"%self.idx
+        s = s + Shape.__str__(self)
+        return s

@@ -12,7 +12,14 @@ from ..shapes.polyline import Polyline
 from ..shapes.polygon import Polygon
 from ..shapes.polygonz import PolygonZ
 from ..shapes.multipoint import Multipoint
-       
+
+# ONLY USED FOR JSON SERIALIZATION
+def jdefault(o):
+    import datetime
+    if isinstance(o, datetime.datetime):
+        return str(o)
+    return o.__dict__
+            
 class FileShp:
     def __init__(self, src, shape_type, bbox, mm):
         """
@@ -65,6 +72,16 @@ class FileShp:
             
         return x, y, z, pointsPerShape
     
+    def add_attributes(self, dbf):
+        """ Given a dbf file, add the records in the file as attributes to the 
+            shapes stored in this file. It makes easier to work with shapes and records. 
+        """
+        rec = dbf.get_records()
+        assert len(rec) == len(self.shapes)
+        for s in range(len(self.shapes)):
+            shape = self.shapes[s]
+            shape.add_attributes(rec[s])
+        
     # TODO: Check if the exported file makes sense!
     def toVTK(self, dst, vals = None, text = None , default_z = None, verbose = False, comments = None):
         from evtk.hl import pointsToVTK, polyLinesToVTK, unstructuredGridToVTK
@@ -216,6 +233,14 @@ class FileShp:
             shp.add_shape(s)
         b.close()
         return shp
+        
+    def asJSON(self):
+        """ Returns string with information stored in this file in JSON format.
+        """
+        import json
+    
+        jsonString  = json.dumps(self, default=jdefault, indent=4, sort_keys=False)
+        return jsonString
 
 if __name__ == "__main__": 
     from dbf import FileDbf
