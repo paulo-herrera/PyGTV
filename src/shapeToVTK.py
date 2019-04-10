@@ -97,6 +97,8 @@ parser.add_argument("-d", "--dest", dest="dst",
 parser.add_argument("-e", "--elev", dest="elev",
                     nargs='+', type=float, default=0.0,
                     help="default elevation for files that only have (x,y) coordinates")
+parser.add_argument("-g", "--gui", dest="gui", action="store_true",
+                    help="run simple graphical interface")
 parser.add_argument("-v", "--verbose", dest="verbose", action="store_true",
                     help="print some information while reading files")
 
@@ -107,14 +109,6 @@ if len(sys.argv) == 1:
     
 args = parser.parse_args()
 
-print("*"*40)
-print("Exporting GIS data to VTK format...")
-print("Path to shape file(s): " + args.src)
-print("VTK output file: " + args.dst)
-print("Verbose: " + str(args.verbose) )
-print("Default elevation: " + str(args.elev) )
-print("-"*40)
-
 ###############################################################
 #src = r"Dominio_modelo_SGA_modificado"
 #src = "./gis/ex1/polygons.shp"
@@ -124,34 +118,48 @@ import os
 from gtv.files.shp import FileShp
 from gtv.files.dbf import FileDbf
 from gtv.files.prj import FilePrj
-    
-# DO SOME CHECKING FOR DST (EXIST?, CREATE?, ETC)
-files_src, files_dst = get_file_list(args.src, args.dst)
+from gui import run_gui
 
-for i in range(len(files_src)):
-    src, dst = files_src[i], files_dst[i]
-    print("Processing files...")
-    print("  src: %s"%files_src[i])
-    print("  dst: %s"%files_dst[i])
+if args.gui:
+    run_gui(args)
     
-    src_shp = src + ".shp"
-    shp = FileShp.read(src_shp, verbose = False)         # pass the pointer to the file. It could be faster to read it at once into memory.
-    print(shp)
-    #shp.list_shapes()
-    
-    src_dbf = src + ".dbf"
-    dbf = FileDbf.read(src_dbf)
-    print(dbf)
-    
-    src_prj = src + ".prj"
-    prj = FilePrj.read(src_prj)
-    #print(prj)
-    
-    vals, text = dbf.get_records_as_lists()
-    comments =            [".shp: " + shp.src]
-    comments = comments + [".dbf: " + dbf.src]
-    comments = comments + [".prj: " + prj.src]
-    shp.toVTK(dst, vals, text, default_z = args.elev, verbose = args.verbose, comments = comments)
+else:
+    print("*"*40)
+    print("Exporting GIS data to VTK format...")
+    print("Path to shape file(s): " + args.src)
+    print("VTK output file: " + args.dst)
+    print("Run gui: " + str(args.gui) )
+    print("Verbose: " + str(args.verbose) )
+    print("Default elevation: " + str(args.elev) )
+    print("-"*40)
+
+    # DO SOME CHECKING FOR DST (EXIST?, CREATE?, ETC)
+    files_src, files_dst = get_file_list(args.src, args.dst)
+
+    for i in range(len(files_src)):
+        src, dst = files_src[i], files_dst[i]
+        print("Processing files...")
+        print("  src: %s"%files_src[i])
+        print("  dst: %s"%files_dst[i])
+        
+        src_shp = src + ".shp"
+        shp = FileShp.read(src_shp, verbose = False)         # pass the pointer to the file. It could be faster to read it at once into memory.
+        print(shp)
+        #shp.list_shapes()
+        
+        src_dbf = src + ".dbf"
+        dbf = FileDbf.read(src_dbf)
+        print(dbf)
+        
+        src_prj = src + ".prj"
+        prj = FilePrj.read(src_prj)
+        #print(prj)
+        
+        vals, text = dbf.get_records_as_lists()
+        comments =            [".shp: " + shp.src]
+        comments = comments + [".dbf: " + dbf.src]
+        comments = comments + [".prj: " + prj.src]
+        shp.toVTK(dst, vals, text, default_z = args.elev, verbose = args.verbose, comments = comments)
     
 print("*** Done ***")
 print("*"*40)

@@ -65,22 +65,25 @@ example).
 
 To test the installation run:
 
->> shapeToVTK --help
+`shapeToVTK --help`
 
 and/or
 
->> export PYGTV_DIR = PATH_TO_DIST_FILEs
->> python PATH_TO_PYGTV/src/examples/points.py
+```
+export PYGTV_DIR = PATH_TO_DIST_FILEs
+python PATH_TO_PYGTV/src/examples/points.py
+```
 
 or
 
->> python PATH_TO_PYGTV/src/examples/points.py PATH_TO_PYGTV/src/examples/ex1/points.shp
+`python PATH_TO_PYGTV/src/examples/points.py PATH_TO_PYGTV/src/examples/ex1/points.shp`
 
 REQUIREMENTS:
 =============
 
     - Numpy. Tested with Numpy 1.8.0 to 1.13.3.
     - PyEVTK. Version 1.2.0 or higher.
+    - Tkinter (only required to run minimal graphical interface)
 
 It is compatible with both Python 2 (2.7+) and Python 3 (3.3+). 
 
@@ -91,14 +94,14 @@ It is useful to build and install the package to a temporary location without
 touching the global python site-packages directory while developing. To do
 this, while in the root directory, one can type:
 
-    1. python setup.py build --debug install --prefix=./tmp
-    2. export PYTHONPATH=./tmp/lib/python2.7/site-packages/:$PYTHONPATH
+    1. `python setup.py build --debug install --prefix=./tmp`
+    2. `export PYTHONPATH=./tmp/lib/python2.7/site-packages/:$PYTHONPATH`
 
 NOTE: you may have to change the Python version depending of the installed
 version on your system.
 
 To test the package one can run some of the examples, e.g.:
-./tmp/lib/python2.7/site-packages/gtv/examples/points.py
+`./tmp/lib/python2.7/site-packages/gtv/examples/points.py`
 
 That should create a points.vtu file in the current directory.
 
