@@ -2,6 +2,7 @@ from Tkinter import *
 import ttk
 import tkFileDialog
 import os
+import platform
 import webbrowser
 from version import PYGTV_VERSION
 
@@ -14,7 +15,7 @@ def make_label(window, text, col, row):
     return l
     
 def make_button(window, title, cmd, col, row):
-    b = Button(window, text=title, command = cmd, bg="black", fg="white", width = 15, pady=4)
+    b = Button(window, text=title, command = cmd, bg="black", fg="white", width = 15, pady=5)
     b.grid(column=col, row=row)
     b.config(font=_default_font)
     return b
@@ -62,8 +63,8 @@ class PyGIS(Frame):
         self.initUI()
         
     def initUI(self):
-        self.width  = 1000
-        self.height = 300
+        self.width  = 975
+        self.height = 400
         win_size = '%dx%d'%(self.width, self.height)
         self.master.geometry(win_size)
         self.master.title("GTV: Gis to VTK")
@@ -106,13 +107,13 @@ class PyGIS(Frame):
         self.e3 = make_entry(w2, col=3, row=0, width = 10, justify="right")
         self.e3.insert(5, "0.0")
         self.l3 = make_label(w2, "  (Only considered for files that do not contain z coordinate)", col=4, row=0)
-
+            
     def setupMiddlePanel(self):
         w = Frame(self, relief=RAISED, borderwidth=1)
         w.pack(fill=BOTH, expand=True)
         
         # Main text export
-        T = Text(w, height=10, width=160) # width and height in characters and lines 
+        T = Text(w, height=20, width=160) # width and height in characters and lines 
         S = Scrollbar(w)
         T.pack(side=LEFT, fill=Y)
         S.pack(side=RIGHT, fill=Y)
@@ -131,14 +132,31 @@ class PyGIS(Frame):
         w.pack(fill=BOTH, expand=True)
         
         self.brun  = make_button(w, "Run", cmd = self.run, col=0, row=0)
-        
         self.l4 = make_label(w, "Exported files: ", col = 1, row = 0)
         self.exportedFiles = ttk.Combobox(w, values= ["None"])
         self.exportedFiles.grid(column=2, row=0)
         self.exportedFiles.current(0)
+        make_label(w, "       ", col=3, row=0)  # some blank space
         
-        self.bquit = make_button(w, "View File", cmd = self.view_file, col=3, row=0)
-        self.bquit = make_button(w, "Quit", cmd = self.quit, col=4, row=0)
+        # Inspect exported files
+        self.bview = make_button(w, "View File", cmd = self.view_file, col=4, row=0)
+        system = platform.system()
+        self.text.write("Detected system: %s\n"%system)
+        if system == "Linux":
+            self.editor = "gedit"
+        elif system == "Windows":
+            self.editor = "notepad.exe"
+        elif system == "Darwin":
+            self.editor == "NA"
+        else:
+            self.text.error("Unknown system: %s\n"%system)
+        make_label(w, "Default editor: ", col=5, row=0) 
+        self.e4 = make_entry(w, col=6, row=0, width = 10, justify="right")
+        self.e4.insert(5, self.editor) 
+        
+        
+        make_label(w, "                            ", col=7, row=0)  # some blank space
+        self.bquit = make_button(w, "Quit", cmd = self.quit, col=8, row=0)
     
     def quit(self):
         self.master.destroy()
@@ -177,10 +195,11 @@ class PyGIS(Frame):
         self.text.write("=====================\n")
         
         import glob
-        g = os.path.join(self.dst, "*.vtu")
-        ff = glob.glob(g)
+        ##g = os.path.join(self.dst, "*.vtu")
+        ##ff = glob.glob(g)
+        ff = files_dst
         
-        filenames = [os.path.basename(f) for f in ff]
+        filenames = [os.path.basename(f) + ".vtu" for f in ff]
         #for f in ff: print(f)
         self.exportedFiles['values'] = filenames
         self.exportedFiles.current(0)
@@ -191,9 +210,8 @@ class PyGIS(Frame):
         
         path = os.path.join(self.dst, filename)
         print(path)
-        
-        editor = "gedit"
-        os.system(editor + ' ' + path)
+         
+        os.system(self.editor + ' ' + path)
         
     
 ################################################################################
