@@ -36,6 +36,14 @@
 # DATE:   18/Mar/2019                                                                          #
 ################################################################################################
 
+import os, glob, sys
+from argparse import ArgumentParser
+from gtv.files.shp import FileShp
+from gtv.files.dbf import FileDbf
+from gtv.files.prj import FilePrj
+from gui import run_gui
+from version import PYGTV_VERSION
+
 def get_file_list(src, dst):
     """
     Check paths for source files (.shp) and destination (VTK files)
@@ -48,8 +56,7 @@ def get_file_list(src, dst):
                 or to a directory. In the second case, the output file has the same root
                 as the src file(s).
     """
-    import os
-    import glob
+   
     assert os.path.exists(src)
     assert os.path.exists(dst)
     if os.path.isfile(dst): assert os.path.isfile(src), "Path to src must point to file"
@@ -82,74 +89,22 @@ def get_file_list(src, dst):
     assert len(files_src) == len(files_dst)
 
     return files_src, files_dst
-    
-#####################################
-###### MAIN SCRIPT ##################
-#####################################
-from argparse import ArgumentParser
-import os, sys
-    
-parser = ArgumentParser()
-parser.add_argument("-s", "--shape", dest="src",
-                    help="path to shape file with or without extension .shp")
-parser.add_argument("-d", "--dest", dest="dst",
-                    help="path to VTK file without extension or to directory where files should be saved")
-parser.add_argument("-e", "--elev", dest="elev",
-                    nargs='+', type=float, default=0.0,
-                    help="default elevation for files that only have (x,y) coordinates")
-parser.add_argument("-g", "--gui", dest="gui", action="store_true",
-                    help="run simple graphical interface")
-parser.add_argument("-v", "--verbose", dest="verbose", action="store_true",
-                    help="print some information while reading files")
 
-if len(sys.argv) == 1: 
-    sys.stderr.write("Missing arguments\n")
-    parser.print_help(sys.stderr)
-    sys.exit(1)
-    
-args = parser.parse_args()
-
-###############################################################
-#src = r"Dominio_modelo_SGA_modificado"
-#src = "./gis/ex1/polygons.shp"
-#dst = "./test_polygons"
-###############################################################
-import os
-from gtv.files.shp import FileShp
-from gtv.files.dbf import FileDbf
-from gtv.files.prj import FilePrj
-from gui import run_gui
-
-if args.gui:
-    run_gui(args)
-    
-else:
-    print("*"*40)
-    print("Exporting GIS data to VTK format...")
-    print("Path to shape file(s): " + args.src)
-    print("VTK output file: " + args.dst)
-    print("Run gui: " + str(args.gui) )
-    print("Verbose: " + str(args.verbose) )
-    print("Default elevation: " + str(args.elev) )
-    print("-"*40)
-
-    # DO SOME CHECKING FOR DST (EXIST?, CREATE?, ETC)
-    files_src, files_dst = get_file_list(args.src, args.dst)
-
+def export_files(files_src, files_dst, default_z, verbose = False):
     for i in range(len(files_src)):
         src, dst = files_src[i], files_dst[i]
         print("Processing files...")
-        print("  src: %s"%files_src[i])
-        print("  dst: %s"%files_dst[i])
+        print("  src: %s"%src)
+        print("  dst: %s"%dst)
         
         src_shp = src + ".shp"
-        shp = FileShp.read(src_shp, verbose = False)         # pass the pointer to the file. It could be faster to read it at once into memory.
-        print(shp)
+        shp = FileShp.read(src_shp, verbose)         # pass the pointer to the file. It could be faster to read it at once into memory.
+        #print(shp)
         #shp.list_shapes()
         
         src_dbf = src + ".dbf"
-        dbf = FileDbf.read(src_dbf)
-        print(dbf)
+        dbf = FileDbf.read(src_dbf, verbose)
+        #print(dbf)
         
         src_prj = src + ".prj"
         prj = FilePrj.read(src_prj)
@@ -159,7 +114,53 @@ else:
         comments =            [".shp: " + shp.src]
         comments = comments + [".dbf: " + dbf.src]
         comments = comments + [".prj: " + prj.src]
-        shp.toVTK(dst, vals, text, default_z = args.elev, verbose = args.verbose, comments = comments)
+        shp.toVTK(dst, vals, text, default_z, verbose, comments = comments)
+
+def setup_cmd_parser():
+    parser = ArgumentParser(description = "PyGTV version: " + PYGTV_VERSION)
+    parser.add_argument("-s", "--shape", dest="src",
+                        help="path to shape file with or without extension .shp")
+    parser.add_argument("-d", "--dest", dest="dst",
+                        help="path to VTK file without extension or to directory where files should be saved")
+    parser.add_argument("-e", "--elev", dest="elev",
+                        nargs='+', type=float, default=0.0,
+                        help="default elevation for files that only have (x,y) coordinates")
+    parser.add_argument("-g", "--gui", dest="gui", action="store_true",
+                        help="run simple graphical interface")
+    parser.add_argument("-v", "--verbose", dest="verbose", action="store_true",
+                        help="print some information while reading files")
+
+    if len(sys.argv) == 1: 
+        sys.stderr.write("Missing arguments\n")
+        parser.print_help(sys.stderr)
+        sys.exit(1)
+        
+    args = parser.parse_args()
+    return args
+   
+#####################################
+###### MAIN SCRIPT ##################
+#####################################
+if __name__ == "__main__":
+    args = setup_cmd_parser()
+
+    if args.gui:
+        run_gui(args)
     
-print("*** Done ***")
-print("*"*40)
+    else:
+        print("*"*40)
+        print("PyGTV version: " + VERSION)
+        print("Exporting GIS data to VTK format...")
+        print("Path to shape file(s): " + args.src)
+        print("VTK output file: " + args.dst)
+        print("Run gui: " + str(args.gui) )
+        print("Verbose: " + str(args.verbose) )
+        print("Default elevation: " + str(args.elev) )
+        print("-"*40)
+
+        # DO SOME CHECKING FOR DST (EXIST?, CREATE?, ETC)
+        files_src, files_dst = get_file_list(args.src, args.dst)
+        export_files(files_src, files_dst, args.elev, args.verbose)
+        
+    print("*** Done ***")
+    print("*"*40)

@@ -28,6 +28,7 @@
 #    from setuptools import setup
 #except ImportError:
 from distutils.core import setup
+from src.version import PYGTV_VERSION
 
 import numpy as np
 
@@ -37,7 +38,7 @@ def readme(fname):
 
 setup(
     name = 'PyGTV',
-    version = '0.1.0',
+    version = PYGTV_VERSION,
     description = 'Exports GIS data as binary VTK files',
     long_description = readme('README.md'),
     author = 'Paulo Herrera',

@@ -1,7 +1,9 @@
 from Tkinter import *
+import ttk
 import tkFileDialog
 import os
 import webbrowser
+from version import PYGTV_VERSION
 
 _default_font = ("Helvetica", 11)
 
@@ -17,8 +19,8 @@ def make_button(window, title, cmd, col, row):
     b.config(font=_default_font)
     return b
 
-def make_entry(window, col, row):
-    e = Entry(window, width=80)
+def make_entry(window, col, row, width = 80, justify = "left"):
+    e = Entry(window, width=width, justify = justify)
     e.grid(column=col, row=row) 
     e.config(font=_default_font)
     return e
@@ -56,7 +58,7 @@ class Echo:
 class PyGIS(Frame):
     def __init__(self):
         Frame.__init__(self)   
-        self.version = "v0.2.0"
+        self.version = PYGTV_VERSION
         self.initUI()
         
     def initUI(self):
@@ -84,12 +86,26 @@ class PyGIS(Frame):
         self.l2 = make_label(w, "Directory where VTK files should be saved? ", col=0, row=1)
         self.e2 = make_entry(w, col=1, row=1)
         self.b2 = make_button(w, "Choose directory", cmd = lambda: browse_dir(self.e2), col=2, row=1)
-
+        
+        # Third row
+        w2 = Frame(self, relief=RAISED, borderwidth=1)
+        w2.pack(fill=X, expand=True)
+        
         # Export only file or all files in directory
         self.processDirectory = BooleanVar()
-        self.chk = Checkbutton(w, text='Export all shape files in directory?', var = self.processDirectory,  command= lambda: self.text.write("Selected to export all files in directory\n"))
-        self.chk.config(font=_default_font)
-        self.chk.grid(column=0, row=2)
+        self.chk1 = Checkbutton(w2, text='Export all shape files in directory?', var = self.processDirectory,  command= lambda: self.text.write("Selected to export all files in directory\n"))
+        self.chk1.config(font=_default_font)
+        self.chk1.grid(column=0, row=0)
+        
+        self.verbose = BooleanVar()
+        self.chk2 = Checkbutton(w2, text='Verbose output?', var = self.verbose,  command= lambda: self.text.write("Selected verbose output\n"))
+        self.chk2.config(font=_default_font)
+        self.chk2.grid(column=1, row=0)
+        
+        self.l3 = make_label(w2, "       Default elevation: ", col=2, row=0)
+        self.e3 = make_entry(w2, col=3, row=0, width = 10, justify="right")
+        self.e3.insert(5, "0.0")
+        self.l3 = make_label(w2, "  (Only considered for files that do not contain z coordinate)", col=4, row=0)
 
     def setupMiddlePanel(self):
         w = Frame(self, relief=RAISED, borderwidth=1)
@@ -105,8 +121,8 @@ class PyGIS(Frame):
         T.pack()
         
         self.text = Echo(T)
-        self.text.write("PyGIS version %s\n"%self.version)
-        self.text.write(40*"=" + "\n")
+        self.text.write("PyGTV version %s\n"%self.version)
+        self.text.write("==============================\n")
         # for i in range(40):
             # T.insert(END, "Just a text Widget in two lines\n")
         
@@ -115,7 +131,14 @@ class PyGIS(Frame):
         w.pack(fill=BOTH, expand=True)
         
         self.brun  = make_button(w, "Run", cmd = self.run, col=0, row=0)
-        self.bquit = make_button(w, "Quit", cmd = self.quit, col=1, row=0)
+        
+        self.l4 = make_label(w, "Exported files: ", col = 1, row = 0)
+        self.exportedFiles = ttk.Combobox(w, values= ["None"])
+        self.exportedFiles.grid(column=2, row=0)
+        self.exportedFiles.current(0)
+        
+        self.bquit = make_button(w, "View File", cmd = self.view_file, col=3, row=0)
+        self.bquit = make_button(w, "Quit", cmd = self.quit, col=4, row=0)
     
     def quit(self):
         self.master.destroy()
@@ -131,18 +154,48 @@ class PyGIS(Frame):
             return
         
         if self.processDirectory.get():
-            src_dir = os.path.dirname(self.e1.get())
+            self.src = os.path.dirname(self.e1.get())
             self.text.write("Exporting all files in directory: \n")
-            self.text.write(src_dir + "\n")
+            self.text.write(self.src + "\n")
         else:
-            src_shp = self.e1.get()
+            self.src = self.e1.get()
             self.text.write("Exporting file: \n")
-            self.text.write(src_shp + "\n")
+            self.text.write(self.src + "\n")
         
-        dst_vtk = self.e2.get()
+        self.dst = self.e2.get()
         self.text.write("To directory: \n")
-        self.text.write(dst_vtk + "\n")
+        self.text.write(self.dst + "\n")
         
+        default_z = float(self.e3.get())
+        self.text.write("Default elevation: %g\n"%default_z)
+        
+        from shapeToVTK import get_file_list, export_files
+        files_src, files_dst = get_file_list(self.src, self.dst)
+        export_files(files_src, files_dst, default_z, self.verbose.get())
+        self.text.write("=====================\n")
+        self.text.write("  All files exported \n")
+        self.text.write("=====================\n")
+        
+        import glob
+        g = os.path.join(self.dst, "*.vtu")
+        ff = glob.glob(g)
+        
+        filenames = [os.path.basename(f) for f in ff]
+        #for f in ff: print(f)
+        self.exportedFiles['values'] = filenames
+        self.exportedFiles.current(0)
+    
+    def view_file(self):
+        filename = self.exportedFiles.get()
+        print(filename)
+        
+        path = os.path.join(self.dst, filename)
+        print(path)
+        
+        editor = "gedit"
+        os.system(editor + ' ' + path)
+        
+    
 ################################################################################
 def run_gui(args):
     win = PyGIS()
