@@ -1,5 +1,4 @@
-INTRODUCTION
-============
+# INTRODUCTION
 
 Python Gis-to-Vtk (PyGTV) is a small python library to read and export vector GIS
 information stored as shape (.shp) and associated (.dbf and .shx) files to VTK 
@@ -10,8 +9,7 @@ numerical simulations.
 <a href="url"><img src="https://github.com/paulo-herrera/PyGTV/blob/master/ex_image1.png" align="center" height="400" width="550" ></a>
 
 
-BACKGROUND
-===========
+# BACKGROUND
 
 Geographical Information Systems (GIS) store data in different formats. One of 
 the most common format to store vector data is composed of 3 files (plus other 
@@ -51,8 +49,7 @@ for text data associated to grid elements, e.g. cells or lines. Hence, text data
 (such as labels, ids, etc) can only be exported as comments that are included in 
 the header section (XML) of the binary VTK files that are exported.
 
-DOCUMENTATION:
-==============
+# DOCUMENTATION
 
 This file together with the included examples in the examples directory in the
 source tree provide enough information to start using the package.
@@ -82,37 +79,45 @@ or
 
 `python PATH_TO_PYGTV/src/examples/points.py PATH_TO_PYGTV/src/examples/ex1/points.shp`
 
-REQUIREMENTS:
-=============
+# REQUIREMENTS:
 
     - Numpy. Tested with Numpy 1.8.0 to 1.13.3.
     - PyEVTK. Version 1.2.0 or higher.
     - Tkinter (only required to run minimal graphical interface)
+    - Tested with Python 3.10
 
-It is compatible with both Python 2 (2.7+) and Python 3 (3.3+). 
+# LICENSE
+-----------------------------------------------------------------------------
+MIT License
 
-DEVELOPER NOTES:
-================
+Copyright (c) 2023 Paulo A. Herrera
 
-It is useful to build and install the package to a temporary location without
-touching the global python site-packages directory while developing. To do
-this, while in the root directory, one can type:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-    1. `python setup.py build --debug install --prefix=./tmp`
-    2. `export PYTHONPATH=./tmp/lib/python2.7/site-packages/:$PYTHONPATH`
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-NOTE: you may have to change the Python version depending of the installed
-version on your system.
-
-To test the package one can run some of the examples, e.g.:
-`./tmp/lib/python2.7/site-packages/gtv/examples/points.py`
-
-That should create a points.vtu file in the current directory.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+--------------------------------------------------------------------------------
 
 I will continue releasing this package as open source, so it is free to be used 
 in any kind of project. I will also continue providing support for simple questions 
-and making incremental improvements as time allows. However, I also  provide 
-contract based support for commercial or research projects interested in this 
-package and/or I am open to discuss possible commercial licensing.
+and making incremental improvements as time allows.
+
+I am a standar user of GIS systems and have experience with VTK files and visualization packages. 
+I have tested PyGTV in my own projects and I know it works reasonably well in most cases. However,
+I know it does not handle some exceptional cases that can handled by files exported from GIS.
+Please let me know if you run into any issue. I will try to look at them.
 
 For further details, please contact me to: paulo.herrera.eirl@gmail.com.
