@@ -4,7 +4,11 @@ INTRODUCTION
 Python Gis-to-Vtk (PyGTV) is a small python library to read and export vector GIS
 information stored as shape (.shp) and associated (.dbf and .shx) files to VTK 
 files that can be imported into visualization packages such as Paraview, VisIt 
-or Mayavi.     
+or Mayavi. It is useful to add GIS information in visualizations of, for example,
+numerical simulations.
+
+<a href="url"><img src="https://github.com/paulo-herrera/PyGTV/blob/master/ex_image1.png" align="center" height="400" width="550" ></a>
+
 
 BACKGROUND
 ===========

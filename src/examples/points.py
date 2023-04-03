@@ -1,3 +1,7 @@
+##########################################################
+# Example of how to open files and list their contents   #
+##########################################################
+
 from gtv.files.shp import FileShp
 from gtv.files.dbf import FileDbf
 import sys
@@ -44,8 +48,5 @@ print("*"*25)
 print("file: %s"%fs.src)
 fs.list_shapes()
 
-#print("*"*25)
-#js = fs.asJSON()
-#print(js)
 
 print("*** ALL DONE ***")
