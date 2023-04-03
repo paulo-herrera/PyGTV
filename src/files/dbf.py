@@ -1,6 +1,6 @@
 # Implements a simple DBF IV parser to read records stored as .dbf files.
 # Author: Paulo Herrera R.
-# Data: 01/April/2019
+# Modified: 03/April/2023
 # REFERENCE: 
 #    - http://www.independent-software.com/dbase-dbf-dbt-file-format.html
 #    - http://web.archive.org/web/20150323061445/http://ulisse.elettra.trieste.it/services/doc/dbase/DBFstruct.htm

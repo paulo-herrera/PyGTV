@@ -13,13 +13,6 @@ from ..shapes.polygon import Polygon
 from ..shapes.polygonz import PolygonZ
 from ..shapes.multipoint import Multipoint
 
-# ONLY USED FOR JSON SERIALIZATION
-def jdefault(o):
-    import datetime
-    if isinstance(o, datetime.datetime):
-        return str(o)
-    return o.__dict__
-            
 class FileShp:
     def __init__(self, src, shape_type, bbox, mm):
         """
@@ -234,14 +227,7 @@ class FileShp:
         b.close()
         return shp
         
-    def asJSON(self):
-        """ Returns string with information stored in this file in JSON format.
-        """
-        import json
-    
-        jsonString  = json.dumps(self, default=jdefault, indent=4, sort_keys=False)
-        return jsonString
-
+        
 if __name__ == "__main__": 
     from dbf import FileDbf
     from prj import FilePrj
