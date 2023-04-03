@@ -241,7 +241,7 @@ class FileDbf:
         b = open(src, "rb")
         #0	1 byte	Valid dBASE for DOS file; bits 0-2 indicate version number, bit 3 indicates the presence of a dBASE for DOS memo file, bits 4-6 indicate the presence of a SQL table, bit 7 indicates the presence of any memo file (either dBASE m PLUS or dBASE for DOS)
         ver = binascii.hexlify(bytearray(b.read(1)))
-        assert ver == "03"
+        assert ver == b"03"
         #print("Version: " + str(ver))
 
         #1-3	3 bytes	Date of last update; formatted as YYMMDD
@@ -254,7 +254,6 @@ class FileDbf:
         #msg = _bytes_to_int(bb)
         #print(msg)
       
-
         #4-7	32-bit number	Number of records in the database file
         nr = _read_native_uint(b)
         #print("nr: %d"%nr)
@@ -302,7 +301,7 @@ class FileDbf:
             
         #n +1	1 byte	0x0D as the field descriptor array terminator
         x = binascii.hexlify(bytearray(b.read(1)))
-        assert x == "0d", x
+        assert x == b"0d", x
 
         # read records
         for i in range(nr):

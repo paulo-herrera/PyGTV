@@ -155,7 +155,7 @@ class FileShp:
 
         #0-3 int32 big File code (always hex value 0x0000270a)
         s = binascii.hexlify(bytearray(b.read(4)))
-        assert (s == "0000270a"), s
+        assert (s == b"0000270a"), s
 
         #4-23 	int32 	big 	Unused; five uint32
         b.read(20)

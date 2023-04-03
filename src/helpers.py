@@ -12,10 +12,14 @@ def _read_native_string(b, nbytes):
     return s
 
 def _read_native_uchar(b):
-    return struct.unpack("b", bytearray(b.read(1)))[0]
-        
+    s = struct.unpack("b", bytearray(b.read(1)))[0]
+    #s = s.decode("ascii")
+    return s
+    
 def _read_native_char(b):
-    return struct.unpack("c", bytearray(b.read(1)))[0]
+    s = struct.unpack("c", bytearray(b.read(1)))[0]
+    s = s.decode("ascii")
+    return s
 
 def _read_native_short(b):
     return struct.unpack("h", bytearray(b.read(2)))[0]
