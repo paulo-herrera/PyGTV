@@ -6,7 +6,10 @@ files that can be imported into visualization packages such as Paraview, VisIt
 or Mayavi. It is useful to add GIS information in visualizations of, for example,
 numerical simulations.
 
-<a href="url"><img src="https://github.com/paulo-herrera/PyGTV/blob/master/ex_image1.png" align="center" height="400" width="550" ></a>
+<a href="url">
+<img src="https://github.com/paulo-herrera/PyGTV/blob/master/ex_image1.png" align="center" height="400" width="550" >
+<em> An example of using PyGTV to include polygons stored in shape files (.shp) in Paraview visualizations. </em>
+</a>
 
 
 # BACKGROUND
