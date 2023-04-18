@@ -41,7 +41,6 @@ from argparse import ArgumentParser
 from gtv.files.shp import FileShp
 from gtv.files.dbf import FileDbf
 from gtv.files.prj import FilePrj
-from gui import run_gui
 from version import PYGTV_VERSION
 
 def get_file_list(src, dst):
@@ -145,11 +144,12 @@ if __name__ == "__main__":
     args = setup_cmd_parser()
 
     if args.gui:
+        from gui import run_gui
         run_gui(args)
     
     else:
         print("*"*40)
-        print("PyGTV version: " + VERSION)
+        print("PyGTV version: " + PYGTV_VERSION)
         print("Exporting GIS data to VTK format...")
         print("Path to shape file(s): " + args.src)
         print("VTK output file: " + args.dst)

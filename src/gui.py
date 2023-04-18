@@ -1,6 +1,6 @@
-from Tkinter import *
-import ttk
-import tkFileDialog
+from tkinter import *
+from tkinter import ttk
+from tkinter import filedialog as tkFileDialog
 import os
 import platform
 import webbrowser

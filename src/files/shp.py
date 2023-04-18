@@ -74,13 +74,27 @@ class FileShp:
         for s in range(len(self.shapes)):
             shape = self.shapes[s]
             shape.add_attributes(rec[s])
+    
+    # def interpolateZ(xp, yp, zp):
+        # """ Interpolate z coordinate (elevation) from a set of 
+            # points with (xp,yp,zp) coordinates.
+        # """
+        # assert len(xp) == len(yp) == len(zp)
         
-    # TODO: Check if the exported file makes sense!
-    def toVTK(self, dst, vals = None, text = None , default_z = None, verbose = False, comments = None):
+    def toVTK(self, dst, vals = None, text = None , default_z = None, verbose = False, comments = None, useZ = None):
+        """ Exports shapes to an unstructured VTK grid.
+            
+            useZ: list with point elevations. It should have the same size as the number of points in the shape.
+                  If present, then default_z is discarded.
+        """
         from evtk.hl import pointsToVTK, polyLinesToVTK, unstructuredGridToVTK
         from evtk.vtk import VtkPolygon
         
         x, y, z, pointsPerShape = self.get_xyz_lists(default_z, verbose)
+        if useZ:
+            assert len(x) == len(useZ)
+            z = useZ
+        
         nshapes = len(self.shapes)
         
         import numpy as np
@@ -115,7 +129,8 @@ class FileShp:
             comments = None
         
         if verbose:
-            print("type (%d): %s"%(self.shape_type, SHP_TYPES[type]) )
+            #breakpoint()
+            print("type (%d): %s"%(self.shape_type, SHP_TYPES[self.shape_type]) )
         
         st = self.shape_type
         if st == TS["POINT"] or st == TS["POINTZ"]:          # POINT
